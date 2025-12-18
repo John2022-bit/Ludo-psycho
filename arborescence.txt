@@ -1,0 +1,38 @@
+/ public
+    index.php  ...............................// fait
+    a_propos.php
+    classique.php
+    improvisation.php
+    improvisation-appliquee.php
+    theatre.php ..............................// fait
+    conferences.php
+    publication.php
+    contact.php
+    ...
+/ admin
+    index.php
+    login.php
+    logout.php
+    publications.php
+    conferences.php
+    ...
+/ includes
+    header.php
+    footer.php
+    navbar.php
+    db.php
+    auth.php
+/ assets
+    /css
+        main.css         <-- thème global
+        admin.css        <-- éventuellement pour le back-office
+    /js
+        main.js
+        publication.js   <-- ou intégré dans main.js
+    /images
+    /uploads
+        publications/
+        ...
+/ api
+    publications.php     <-- endpoints JSON (GET/POST)
+    ...

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ludo & Psycho</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Polices -->
+  <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Roboto+Slab:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --color-primary:#4A11A8;
+      --color-primary-dark:#3A0E8A;
+      --color-secondary:#F79133;
+      --color-accent:#FF8303;
+      --color-bg:#F7FCFB;
+      --color-bg-alt:#F2EAFE;
+      --color-text-light:#F7FCFB;
+      --color-text-dark:#2C2438;
+      --color-heading:#4F264A;
+
+      --font-body:'Roboto Slab', serif;
+      --font-heading:'Kalam', cursive;
+
+      --radius:18px;
+      --shadow:0 12px 30px rgba(0,0,0,.10);
+      --shadow-strong:0 24px 55px rgba(0,0,0,.22);
+    }
+
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--font-body);background:var(--color-bg);color:var(--color-text-dark)}
+    img{max-width:100%;display:block}
+    a{color:inherit;text-decoration:none}
+
+    h1,h2,h3,h4{font-family:var(--font-heading);color:var(--color-heading);margin:0 0 .6rem}
+    p{margin:.25rem 0 0;line-height:1.65}
+
+    .container{max-width:1180px;margin:0 auto;padding:0 1.2rem}
+    .section{padding:3rem 0}
+    .section--alt{background:var(--color-bg-alt)}
+    .section-title{font-size:2rem;text-align:center;margin-bottom:.35rem}
+    .section-subtitle{max-width:720px;margin:.2rem auto 2.2rem;text-align:center;opacity:.9}
+
+    /* NAVBAR */
+    .navbar-wrapper{
+      position:sticky;top:0;z-index:50;
+      background:rgba(247,252,251,.96);
+      backdrop-filter:blur(8px);
+      border-bottom:1px solid rgba(74,17,168,.08);
+    }
+    .navbar{
+      height:74px;display:flex;align-items:center;justify-content:space-between;gap:1rem;
+    }
+    .brand{
+      display:flex;align-items:center;gap:.9rem;min-width:240px;
+    }
+    .brand-logo{
+      width:126px;height:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.10));
+    }
+    .brand-text{
+      display:flex;flex-direction:column;gap:.1rem
+    }
+    .brand-title{
+      font-family:var(--font-heading);
+      font-size:1.25rem;
+      color:var(--color-primary);
+      line-height:1;
+    }
+    .brand-title span{color:var(--color-accent)}
+    .brand-tagline{
+      font-size:.78rem;opacity:.75
+    }
+
+    .menu{
+      display:flex;align-items:center;gap:1.35rem;font-size:.96rem;
+    }
+    .nav-link{
+      font-weight:600;position:relative;
+    }
+    .nav-link:after{
+      content:"";position:absolute;left:0;bottom:-.25rem;height:2px;width:0;
+      background:var(--color-accent);transition:width .18s ease;
+    }
+    .nav-link:hover:after{width:100%}
+
+    .nav-cta{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:.55rem 1.1rem;border-radius:999px;border:none;
+      background:var(--color-primary);color:var(--color-text-light);
+      font-weight:700;cursor:pointer;
+      box-shadow:0 10px 20px rgba(74,17,168,.22);
+      transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+    }
+    .nav-cta:hover{
+      background:var(--color-primary-dark);
+      transform:translateY(-1px);
+      box-shadow:0 16px 26px rgba(74,17,168,.28);
+    }
+
+    .burger{
+      display:none;width:40px;height:40px;border-radius:999px;
+      border:1px solid rgba(74,17,168,.35);background:#fff;
+      align-items:center;justify-content:center;cursor:pointer;
+    }
+    .burger span{width:16px;height:2px;background:var(--color-primary);position:relative}
+    .burger span:before,.burger span:after{
+      content:"";position:absolute;left:0;width:16px;height:2px;background:var(--color-primary)
+    }
+    .burger span:before{top:-5px}
+    .burger span:after{top:5px}
+
+    /* HERO */
+    .hero{
+      background:
+        radial-gradient(circle at top left, rgba(247,145,51,.95) 0, transparent 52%),
+        linear-gradient(135deg, var(--color-primary), #6B2ED6);
+      color:var(--color-text-light);
+      padding:4.1rem 0 3.2rem;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1.55fr) minmax(0,1.15fr);
+      gap:2.2rem;
+      align-items:center;
+    }
+
+    .hero-kicker{
+      display:inline-flex;gap:.55rem;align-items:center;
+      padding:.28rem .75rem;border-radius:999px;
+      background:rgba(247,252,251,.12);
+      font-size:.82rem;margin-bottom:.9rem
+    }
+    .hero-dot{width:7px;height:7px;border-radius:999px;background:#4EFFA3}
+    .hero-title{
+      color:var(--color-text-light);
+      font-size:2.85rem;line-height:1.08;margin:0 0 .8rem
+    }
+    .hero-title span{color:var(--color-accent)}
+    .hero-lead{max-width:640px;font-size:1.02rem;opacity:.96}
+
+    .hero-actions{margin-top:1.55rem;display:flex;flex-wrap:wrap;gap:.9rem;align-items:center}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:.68rem 1.45rem;border-radius:999px;border:none;
+      font-weight:800;cursor:pointer;
+      transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+      text-decoration:none;
+    }
+    .btn-primary{
+      background:var(--color-secondary);color:var(--color-heading);
+      box-shadow:0 12px 24px rgba(0,0,0,.18)
+    }
+    .btn-primary:hover{transform:translateY(-1px);box-shadow:0 18px 34px rgba(0,0,0,.22)}
+    .btn-ghost{
+      background:transparent;color:var(--color-text-light);
+      border:1px solid rgba(247,252,251,.75)
+    }
+    .btn-ghost:hover{background:rgba(247,252,251,.09)}
+
+    .hero-points{
+      margin-top:1.2rem;
+      display:flex;flex-wrap:wrap;gap:.55rem 1.2rem;
+      background:rgba(247,252,251,.09);
+      border:1px solid rgba(247,252,251,.16);
+      border-radius:16px;
+      padding:.75rem .85rem;
+      font-size:.86rem;
+    }
+
+    /* HERO RIGHT: collage photos */
+    .hero-panel{
+      background:rgba(247,252,251,.09);
+      border:1px solid rgba(247,252,251,.16);
+      border-radius:22px;
+      padding:1.1rem 1.1rem 1.2rem;
+      box-shadow:var(--shadow-strong);
+    }
+    .panel-title{
+      display:flex;align-items:center;justify-content:space-between;gap:1rem;
+      margin-bottom:.9rem;
+    }
+    .panel-badge{
+      display:inline-flex;align-items:center;gap:.5rem;
+      background:rgba(247,252,251,.14);
+      border-radius:999px;
+      padding:.38rem .75rem;
+      font-size:.78rem;
+    }
+    .panel-badge i{
+      width:14px;height:14px;border-radius:999px;background:var(--color-secondary);display:inline-block
+    }
+
+    .mosaic{
+      display:grid;
+      grid-template-columns:repeat(12, 1fr);
+      gap:.75rem;
+    }
+    .tile{
+      border-radius:16px;
+      overflow:hidden;
+      background:rgba(247,252,251,.08);
+      border:1px solid rgba(247,252,251,.14);
+      position:relative;
+      min-height:88px;
+    }
+    .tile img{
+      width:100%;height:100%;
+      object-fit:cover;
+      transform:scale(1.02);
+    }
+    .tile .caption{
+      position:absolute;left:10px;bottom:10px;
+      background:rgba(28,18,48,.55);
+      border:1px solid rgba(247,252,251,.16);
+      color:rgba(247,252,251,.95);
+      border-radius:999px;
+      padding:.32rem .62rem;
+      font-size:.74rem;
+    }
+
+    .t1{grid-column:1 / span 7; min-height:130px;}
+    .t2{grid-column:8 / span 5; min-height:130px;}
+    .t3{grid-column:1 / span 5; min-height:110px;}
+    .t4{grid-column:6 / span 7; min-height:110px;}
+
+    .panel-note{
+      margin-top:.9rem;
+      font-size:.86rem;
+      opacity:.92;
+      line-height:1.55;
+    }
+
+    /* CARDS */
+    .grid-3{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:1.5rem}
+    .grid-2{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:1.7rem}
+
+    .card{
+      background:#fff;border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:1.35rem 1.35rem 1.15rem;
+      overflow:hidden;
+    }
+
+    .card-top{
+      display:flex;align-items:center;justify-content:space-between;gap:1rem;
+      margin-bottom:.7rem;
+    }
+
+    .tag{
+      display:inline-flex;align-items:center;gap:.5rem;
+      font-size:.78rem;font-weight:800;
+      padding:.32rem .72rem;border-radius:999px;
+      background:rgba(74,17,168,.06);
+      color:var(--color-primary);
+      white-space:nowrap;
+    }
+
+    .thumb{
+      width:54px;height:54px;border-radius:16px;
+      overflow:hidden;border:1px solid rgba(74,17,168,.10);
+      flex:0 0 auto;
+      background:rgba(74,17,168,.06);
+    }
+    .thumb img{width:100%;height:100%;object-fit:cover}
+
+    .card h3{font-size:1.3rem;margin:.2rem 0 .4rem}
+    .card p{font-size:.95rem}
+
+    .card-link{
+      display:inline-flex;align-items:center;gap:.5rem;
+      margin-top:.9rem;
+      font-weight:900;color:var(--color-primary);
+      font-size:.92rem;
+    }
+
+    /* ACCENT CARD */
+    .card--accent{
+      background:var(--color-secondary);
+      color:var(--color-heading);
+    }
+    .card--accent .tag{
+      background:rgba(247,252,251,.18);
+      color:rgba(28,18,48,.92);
+    }
+    .list{margin:.7rem 0 0;padding-left:1.1rem;font-size:.95rem}
+    .list li{margin-bottom:.25rem}
+
+    /* PUBLICATIONS */
+    .pub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+    .pub{
+      background:#fff;border-radius:16px;box-shadow:0 10px 22px rgba(0,0,0,.07);
+      padding:1rem;position:relative;overflow:hidden
+    }
+    .pub-media{
+      height:120px;border-radius:14px;overflow:hidden;
+      border:1px solid rgba(74,17,168,.10);
+      background:rgba(74,17,168,.06);
+      margin-bottom:.85rem;
+    }
+    .pub-media img{width:100%;height:100%;object-fit:cover}
+    .pub h4{font-size:1.05rem;margin:0 0 .35rem}
+    .meta{font-size:.78rem;opacity:.7;margin-bottom:.35rem}
+    .ribbon{
+      position:absolute;top:10px;right:10px;
+      background:var(--color-secondary);color:var(--color-heading);
+      font-size:.72rem;font-weight:900;
+      padding:.28rem .55rem;border-radius:999px;
+    }
+
+    /* FOUNDER */
+    .founder{
+      display:flex;align-items:center;gap:1rem;
+      max-width:860px;margin:0 auto;
+    }
+    .avatar{
+      width:96px;height:96px;border-radius:999px;
+      overflow:hidden;border:4px solid rgba(255,131,3,.55);
+      box-shadow:0 12px 22px rgba(0,0,0,.12);
+      flex:0 0 auto;
+    }
+    .avatar img{width:100%;height:100%;object-fit:cover}
+    .founder-card{
+      background:#fff;border-radius:18px;box-shadow:var(--shadow);
+      padding:1.1rem 1.2rem;
+      border:1px solid rgba(74,17,168,.08);
+    }
+    .founder-card h3{margin:0 0 .25rem;font-size:1.35rem}
+    .founder-card .small{font-size:.88rem;opacity:.78}
+
+    /* CTA */
+    .cta{text-align:center}
+    .cta p{max-width:700px;margin:.65rem auto 1.25rem}
+
+    /* FOOTER */
+    .footer{background:#1C1230;color:rgba(247,252,251,.84);padding:1.6rem 0;font-size:.86rem}
+    .footer-inner{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center}
+    .footer a{opacity:.85}
+    .footer a:hover{opacity:1}
+
+    /* RESPONSIVE */
+    @media (max-width: 980px){
+      .hero-grid{grid-template-columns:1fr}
+      .t1,.t2,.t3,.t4{grid-column:1 / -1}
+      .tile{min-height:140px}
+    }
+    @media (max-width: 860px){
+      .menu{
+        display:none;position:absolute;left:0;right:0;top:74px;
+        background:rgba(247,252,251,.98);
+        border-bottom:1px solid rgba(74,17,168,.08);
+        padding:.95rem 1.2rem 1.1rem;
+        flex-direction:column;align-items:flex-start;gap:.9rem;
+      }
+      .menu.is-open{display:flex}
+      .burger{display:inline-flex}
+    }
+    @media (max-width: 780px){
+      .grid-3,.grid-2,.pub-grid{grid-template-columns:1fr}
+      .section{padding:2.35rem 0}
+      .hero-title{font-size:2.15rem}
+      .brand-logo{width:106px}
+      .founder{flex-direction:column;align-items:flex-start}
+      .avatar{width:92px;height:92px}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="navbar-wrapper">
+    <div class="container navbar">
+      <div class="brand">
+        <img class="brand-logo" src="logo.png" alt="Logo Ludo & Psycho">
+        <div class="brand-text">
+          <div class="brand-title"><span>Ludo</span> & Psycho</div>
+          <div class="brand-tagline">Facteurs humains · Soft skills · Pédagogies actives</div>
+        </div>
+      </div>
+
+      <nav class="menu" id="menu">
+        <a class="nav-link" href="#approches">Approches</a>
+        <a class="nav-link" href="#ateliers">Ateliers & conférences</a>
+        <a class="nav-link" href="#ressources">Ressources</a>
+        <a class="nav-link" href="#proprietaire">Portrait</a>
+        <button class="nav-cta" onclick="window.location.href='contact.php'">Contact</button>
+      </nav>
+
+      <button class="burger" id="burger" aria-label="Menu">
+        <span></span>
+      </button>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="hero-kicker">
+          <span class="hero-dot"></span>
+          Pour les organisations qui placent l’humain au centre
+        </div>
+
+        <h1 class="hero-title"><span>Ludo</span> & Psycho</h1>
+
+        <p class="hero-lead">
+          Des interventions vivantes (théâtre, improvisation, ateliers, conférences) pour renforcer
+          les soft skills, la coopération et la qualité du travail collectif.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#approches">Découvrir les approches</a>
+          <a class="btn btn-ghost" href="conferences.php">Voir le calendrier</a>
+        </div>
+
+        <div class="hero-points">
+          <span>✔ Prise de parole & présence</span>
+          <span>✔ Cohésion & intelligence collective</span>
+          <span>✔ Facteurs humains & prévention</span>
+        </div>
+      </div>
+
+      <aside class="hero-panel">
+        <div class="panel-title">
+          <div class="panel-badge"><i></i> Illustrations & terrain</div>
+          <div style="font-size:.78rem;opacity:.9">Formats intra / inter</div>
+        </div>
+
+        <div class="mosaic" aria-label="Galerie d'illustrations">
+          <div class="tile t1">
+            <img src="people.jpg" alt="Groupe en atelier collaboratif">
+            <div class="caption">Ateliers</div>
+          </div>
+          <div class="tile t2">
+            <img src="applaudissement.jpg" alt="Public en conférence">
+            <div class="caption">Conférences</div>
+          </div>
+          <div class="tile t3">
+            <img src="levemain.jpg" alt="Équipe célébrant une réussite">
+            <div class="caption">Engagement</div>
+          </div>
+          <div class="tile t4">
+            <img src="rouage.jpg" alt="Roue dentée symbolisant la coopération">
+            <div class="caption">Collectif</div>
+          </div>
+        </div>
+
+        <div class="panel-note">
+          Une pédagogie expérientielle : mise en situation, feedback, analyse et transfert
+          vers le quotidien professionnel.
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <!-- APPROCHES -->
+    <section class="section" id="approches">
+      <div class="container">
+        <h2 class="section-title">Approches & formats</h2>
+        <p class="section-subtitle">
+          Une palette de dispositifs complémentaires pour travailler les facteurs humains sous différents angles :
+          corps, émotion, cognition, et dynamique d’équipe.
+        </p>
+
+        <div class="grid-3">
+          <article class="card">
+            <div class="card-top">
+              <div class="tag">Théâtre & jeu scénique</div>
+              <div class="thumb" title="Illustration">
+                <img src="applaudissement.jpg" alt="Illustration théâtre / prise de parole">
+              </div>
+            </div>
+            <h3>Prise de parole & présence</h3>
+            <p>Développer la confiance, la clarté du message, l’impact et la relation à l’auditoire.</p>
+            <a class="card-link" href="theatre.php">En savoir plus →</a>
+          </article>
+
+          <article class="card">
+            <div class="card-top">
+              <div class="tag">Improvisation appliquée</div>
+              <div class="thumb" title="Illustration">
+                <img src="people.jpg" alt="Illustration improvisation / coopération">
+              </div>
+            </div>
+            <h3>Coopération & adaptabilité</h3>
+            <p>Écoute, lâcher-prise, co-construction : l’impro comme laboratoire du collectif.</p>
+            <a class="card-link" href="improvisation-appliquee.php">Découvrir →</a>
+          </article>
+
+          <article class="card">
+            <div class="card-top">
+              <div class="tag">Soft skills & facteurs humains</div>
+              <div class="thumb" title="Illustration">
+                <img src="skills.jpg" alt="Illustration soft skills">
+              </div>
+            </div>
+            <h3>Comprendre les comportements</h3>
+            <p>Biais, émotions, décisions, dynamiques de groupe : rendre l’humain lisible et actionnable.</p>
+            <a class="card-link" href="facteur.php">Explorer →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATELIERS & CONF -->
+    <section class="section section--alt" id="ateliers">
+      <div class="container">
+        <h2 class="section-title">Ateliers & conférences</h2>
+        <p class="section-subtitle">
+          Des formats courts ou longs pour vos séminaires, journées pédagogiques et dispositifs de formation continue.
+        </p>
+
+        <div class="grid-2">
+          <article class="card card--accent">
+            <div class="card-top">
+              <div class="tag">Ateliers expérientiels</div>
+              <div class="thumb" aria-hidden="true">
+                <img src="people.jpg" alt="">
+              </div>
+            </div>
+            <p>Des ateliers d’une demi-journée à plusieurs jours pour expérimenter, réfléchir et ancrer.</p>
+            <ul class="list">
+              <li>Prise de parole, posture, présence</li>
+              <li>Coopération & intelligence collective</li>
+              <li>Prévention des risques humains</li>
+              <li>Parcours pédagogiques sur-mesure</li>
+            </ul>
+            <div style="margin-top:1rem">
+              <a class="btn btn-primary" href="atelier.php">Voir les ateliers</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-top">
+              <div class="tag">Conférences interactives</div>
+              <div class="thumb" aria-hidden="true">
+                <img src="applaudissement.jpg" alt="">
+              </div>
+            </div>
+            <p>Des interventions participatives pour ouvrir un séminaire, nourrir un réseau ou un collectif.</p>
+            <ul class="list">
+              <li>Formats grands groupes</li>
+              <li>Exemples concrets + interactions</li>
+              <li>Adaptation aux publics et enjeux</li>
+            </ul>
+            <div style="margin-top:1rem">
+              <a class="btn btn-primary" href="conferences.php">Consulter le calendrier</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESSOURCES -->
+    <section class="section" id="ressources">
+      <div class="container">
+        <h2 class="section-title">Ressources & publications</h2>
+        <p class="section-subtitle">
+          Articles, retours d’expérience, outils pédagogiques : pour prolonger les ateliers et nourrir vos réflexions.
+        </p>
+
+        <div class="pub-grid">
+          <article class="pub">
+            <span class="ribbon">Sélection</span>
+            <div class="pub-media">
+              <img src="51WS5ZSY9JL._SX195_.jpg" alt="Couverture d'ouvrage lié à l'éducation">
+            </div>
+            <h4>La mesure du droit à l’éducation</h4>
+            <div class="meta">Lecture & réflexion · 6 min</div>
+            <p>Une ressource pour nourrir les échanges sur l’éducation, l’accès et les enjeux de société.</p>
+          </article>
+
+          <article class="pub">
+            <div class="pub-media">
+              <img src="skills.jpg" alt="Illustration soft skills">
+            </div>
+            <h4>Soft skills : de la théorie au terrain</h4>
+            <div class="meta">Compétences · 8 min</div>
+            <p>Mettre en mouvement les équipes et transformer les intentions en comportements observables.</p>
+          </article>
+
+          <article class="pub">
+            <div class="pub-media">
+              <img src="rouage.jpg" alt="Illustration coopération">
+            </div>
+            <h4>Coopérer : règles simples, effets durables</h4>
+            <div class="meta">Collectif · 7 min</div>
+            <p>Créer de la clarté, des rituels et une qualité d’écoute qui fluidifie le travail.</p>
+          </article>
+        </div>
+
+        <div class="cta" style="margin-top:1.7rem">
+          <a class="btn btn-primary" href="publication.php">Voir toutes les publications</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROPRIETAIRE / PORTRAIT -->
+    <section class="section section--alt" id="proprietaire">
+      <div class="container">
+        <h2 class="section-title">La démarche</h2>
+        <p class="section-subtitle">
+          Une approche centrée sur l’humain : faire vivre, observer, analyser, puis transférer.
+        </p>
+
+        <div class="founder">
+          <div class="avatar">
+            <img src="sophie.jpg" alt="Portrait de la fondatrice">
+          </div>
+          <div class="founder-card">
+            <h3>Fondatrice & animatrice</h3>
+            <p class="small">
+              Pédagogies actives, théâtre et dispositifs expérientiels au service des organisations.
+            </p>
+            <p>
+              L’objectif : rendre visibles les facteurs humains (communication, émotions, biais, coopération) et
+              outiller les équipes avec des pratiques simples, ancrées et réutilisables.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA CONTACT -->
+    <section class="section" id="contact">
+      <div class="container cta">
+        <h2 class="section-title">Envie d’en parler ?</h2>
+        <p>
+          Un séminaire à construire, une formation à concevoir, un besoin d’animation ponctuel ou un parcours complet :
+          échangeons pour imaginer un dispositif adapté à vos publics et à vos contraintes.
+        </p>
+        <a class="btn btn-primary" href="contact.php">Contacter</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>© 2025 Ludo & Psycho · Tous droits réservés</div>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <a href="a_propos.php">À propos</a>
+        <a href="mentions-legales.php">Mentions légales</a>
+        <a href="contact.php">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const burger = document.getElementById('burger');
+    const menu = document.getElementById('menu');
+    if (burger && menu) {
+      burger.addEventListener('click', () => menu.classList.toggle('is-open'));
+    }
+  </script>
+</body>
+</html>
